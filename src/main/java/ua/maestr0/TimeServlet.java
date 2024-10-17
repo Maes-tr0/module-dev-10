@@ -1,6 +1,5 @@
 package ua.maestr0;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +9,9 @@ import java.io.IOException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Enumeration;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 @WebServlet(value = "/time")
 public class TimeServlet extends HttpServlet {
@@ -26,12 +27,25 @@ public class TimeServlet extends HttpServlet {
 
             String formattedTime = now.format(formatter);
             resp.getWriter().println(formattedTime + " " + offsetDisplay);
-            resp.getWriter().flush();
+            resp.getWriter().println("<br>");
+            resp.getWriter().println(getAllHeaders(req));
+            resp.getWriter().close();
             resp.setStatus(200);
         } catch (IOException e) {
             e.printStackTrace();
             resp.setStatus(500);
         }
+    }
+
+    private String getAllHeaders(HttpServletRequest req){
+        StringJoiner stringJoiner = new StringJoiner("\n");
+        Enumeration<String> headers = req.getHeaderNames();
+        while (headers.hasMoreElements()) {
+            String name = headers.nextElement();
+            String value = req.getHeader(name);
+            stringJoiner.add(name + "=" + value);
+        }
+        return stringJoiner.toString();
     }
 
     private ZonedDateTime getZonedDateTime(HttpServletResponse resp, String timezone) throws IOException {

@@ -1,12 +1,16 @@
 package ua.maestr0;
 
-import jakarta.servlet.*;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpFilter;
 
 import java.io.IOException;
 
 @WebFilter(value = "/time")
-public class TimezoneValidateFilter implements Filter {
+public class TimezoneValidateFilter extends HttpFilter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String timezone = servletRequest.getParameter("timezone");
